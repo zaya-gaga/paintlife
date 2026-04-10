@@ -2,37 +2,37 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>易思合道作业纸 - 网页录入表单</title>
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; line-height: 1.6; }
-        .container { max-width: 900px; margin: 0 auto; background: #fff; padding: 40px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-radius: 8px; }
+        .container { max-width: 900px; margin: 0 auto; background: #fff; padding: 40px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-radius: 8px; box-sizing: border-box; }
         h1 { text-align: center; color: #333; margin-bottom: 30px; }
         .section { margin-bottom: 25px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
         .section-title { font-weight: bold; font-size: 1.1em; margin-bottom: 15px; color: #444; }
         .input-group { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 10px; }
         .field { display: flex; align-items: center; gap: 5px; }
         
-        input[type="text"], select { border: none; border-bottom: 1px solid #999; padding: 5px; outline: none; background: #fcfcfc; font-size: 14px; }
+        input[type="text"], select { border: none; border-bottom: 1px solid #999; padding: 5px; outline: none; background: #fcfcfc; font-size: 16px; }
         input[type="text"]:focus, select:focus { border-bottom: 2px solid #007bff; background: #fff; }
         
         /* 天干地支通用下拉样式 */
-        select.tg-select { font-weight: bold; width: 60px; text-align: center; cursor: pointer; }
+        select.tg-select { font-weight: bold; width: 65px; text-align: center; cursor: pointer; font-size: 18px; }
         
         /* 地支盒子样式 */
         .dz-box { 
-            min-width: 80px; 
-            min-height: 25px; 
+            min-width: 90px; 
+            min-height: 30px; 
             border-bottom: 1px solid #999; 
             cursor: pointer; 
             display: inline-block; 
             text-align: center; 
             font-weight: bold;
-            font-size: 13px;
             vertical-align: middle;
             background: #fcfcfc;
+            line-height: 30px;
         }
-        .dz-box:empty::before { content: ""; }
+        .dz-box:empty::before { content: "点击选择"; color: #ccc; font-weight: normal; font-size: 12px; }
 
         /* 弹出菜单样式 */
         .dz-menu {
@@ -40,40 +40,56 @@
             position: absolute;
             background: white;
             border: 1px solid #ccc;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
             z-index: 1000;
-            padding: 10px;
+            padding: 15px;
             grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            border-radius: 5px;
+            gap: 12px;
+            border-radius: 8px;
         }
         .dz-item {
-            padding: 5px 10px;
+            padding: 8px 12px;
             cursor: pointer;
             border: 1px solid #eee;
             text-align: center;
-            border-radius: 3px;
+            border-radius: 5px;
+            font-size: 18px;
+            font-weight: bold;
         }
         .dz-item:hover { background: #f0f0f0; }
         
-        table { width: 100%; border-collapse: collapse; margin: 10px 0; }
-        th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+        /* 表格容器，处理移动端溢出 */
+        .table-wrapper { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 10px 0; }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        th, td { border: 1px solid #ccc; padding: 10px 8px; text-align: center; }
         th { background: #f9f9f9; }
-        td input { width: 90%; border: none; text-align: center; outline: none; }
+        td input { width: 90%; border: none; text-align: center; outline: none; font-size: 16px; }
         
-        .row-inputs { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-        .full-width-input { flex: 1; border: none; border-bottom: 1px solid #999; padding: 5px; }
+        .row-inputs { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+        .full-width-input { flex: 1; min-width: 200px; border: none; border-bottom: 1px solid #999; padding: 5px; font-size: 16px; }
         
-        textarea { width: 100%; height: 100px; border: 1px solid #ccc; border-radius: 4px; padding: 10px; resize: vertical; margin-top: 10px; }
+        textarea { width: 100%; height: 120px; border: 1px solid #ccc; border-radius: 4px; padding: 10px; resize: vertical; margin-top: 10px; font-size: 16px; box-sizing: border-box; }
         
-        .actions { display: flex; justify-content: center; gap: 20px; margin-top: 40px; }
-        .btn { padding: 12px 30px; border: none; border-radius: 5px; cursor: pointer; font-size: 1em; transition: background 0.3s; }
+        .actions { display: flex; justify-content: center; gap: 20px; margin-top: 40px; flex-wrap: wrap; }
+        .btn { padding: 12px 40px; border: none; border-radius: 5px; cursor: pointer; font-size: 1.1em; transition: background 0.3s; width: 100%; max-width: 250px; }
         .btn-save { background-color: #28a745; color: white; }
         .btn-save:hover { background-color: #218838; }
         .btn-clear { background-color: #6c757d; color: white; }
         .btn-clear:hover { background-color: #5a6268; }
         
-        .hint { font-size: 0.8em; color: #888; text-align: center; margin-top: 10px; }
+        .hint { font-size: 0.9em; color: #888; text-align: center; margin-top: 15px; padding-bottom: 20px; }
+
+        /* iPhone / 移动端 优化 */
+        @media (max-width: 768px) {
+            body { padding: 10px; background-color: #fff; }
+            .container { padding: 20px 15px; box-shadow: none; border-radius: 0; width: 100%; }
+            h1 { font-size: 1.5em; margin-top: 10px; }
+            .section-title { font-size: 1.2em; }
+            .field { margin-bottom: 10px; }
+            .input-group { gap: 10px; }
+            .btn { max-width: 100%; }
+            .dz-menu { width: 80%; left: 10% !important; grid-template-columns: repeat(3, 1fr); }
+        }
     </style>
 </head>
 <body>
@@ -85,15 +101,16 @@
         <!-- 基本信息 -->
         <div class="section">
             <div class="input-group">
-                <div class="field">姓名：<input type="text" id="name" required></div>
+                <div class="field">姓名：<input type="text" id="name" required style="width: 120px;"></div>
                 <div class="field">
                     生辰：
-                    <input type="text" id="year" style="width: 50px;">年
-                    <input type="text" id="month" style="width: 30px;">月
-                    <input type="text" id="day" style="width: 30px;">日
-                    <input type="text" id="hour" style="width: 30px;">时
+                    <input type="text" id="year" style="width: 55px;">年
+                    <input type="text" id="month" style="width: 40px;">月
+                    <input type="text" id="day" style="width: 40px;">日
+                    <input type="text" id="hour" style="width: 40px;">时
                 </div>
                 <div class="field">
+                    性别：
                     <select id="gender">
                         <option value="乾">乾（男）</option>
                         <option value="坤">坤（女）</option>
@@ -105,75 +122,77 @@
         <!-- 命盘 Table -->
         <div class="section">
             <div class="section-title">命盘</div>
-            <table>
-                <tr>
-                    <th></th>
-                    <th>年</th>
-                    <th>月</th>
-                    <th>日</th>
-                    <th>时</th>
-                </tr>
-                <tr>
-                    <td>天干</td>
-                    <td><select id="ming_tg_year" class="tg-select" onchange="updateStemColor(this)"></select></td>
-                    <td><select id="ming_tg_month" class="tg-select" onchange="updateStemColor(this)"></select></td>
-                    <td><select id="ming_tg_day" class="tg-select" onchange="updateStemColor(this)"></select></td>
-                    <td><select id="ming_tg_hour" class="tg-select" onchange="updateStemColor(this)"></select></td>
-                </tr>
-                <tr>
-                    <td>地支</td>
-                    <td><div id="ming_dz_year" class="dz-box" onclick="showDzMenu(event, this)"></div></td>
-                    <td><div id="ming_dz_month" class="dz-box" onclick="showDzMenu(event, this)"></div></td>
-                    <td><div id="ming_dz_day" class="dz-box" onclick="showDzMenu(event, this)"></div></td>
-                    <td><div id="ming_dz_hour" class="dz-box" onclick="showDzMenu(event, this)"></div></td>
-                </tr>
-            </table>
+            <div class="table-wrapper">
+                <table>
+                    <tr>
+                        <th></th>
+                        <th>年</th>
+                        <th>月</th>
+                        <th>日</th>
+                        <th>时</th>
+                    </tr>
+                    <tr>
+                        <td>天干</td>
+                        <td><select id="ming_tg_year" class="tg-select" onchange="updateStemColor(this)"></select></td>
+                        <td><select id="ming_tg_month" class="tg-select" onchange="updateStemColor(this)"></select></td>
+                        <td><select id="ming_tg_day" class="tg-select" onchange="updateStemColor(this)"></select></td>
+                        <td><select id="ming_tg_hour" class="tg-select" onchange="updateStemColor(this)"></select></td>
+                    </tr>
+                    <tr>
+                        <td>地支</td>
+                        <td><div id="ming_dz_year" class="dz-box" onclick="showDzMenu(event, this)"></div></td>
+                        <td><div id="ming_dz_month" class="dz-box" onclick="showDzMenu(event, this)"></div></td>
+                        <td><div id="ming_dz_day" class="dz-box" onclick="showDzMenu(event, this)"></div></td>
+                        <td><div id="ming_dz_hour" class="dz-box" onclick="showDzMenu(event, this)"></div></td>
+                    </tr>
+                </table>
+            </div>
         </div>
 
         <!-- 大运 Table -->
         <div class="section">
             <div class="section-title">大运</div>
-            <table>
-                <tr>
-                    <td>岁数</td>
-                    <td><input type="text" id="dy_age_1"></td>
-                    <td><input type="text" id="dy_age_2"></td>
-                    <td><input type="text" id="dy_age_3"></td>
-                    <td><input type="text" id="dy_age_4"></td>
-                    <td><input type="text" id="dy_age_5"></td>
-                    <td><input type="text" id="dy_age_6"></td>
-                    <td><input type="text" id="dy_age_7"></td>
-                    <td><input type="text" id="dy_age_8"></td>
-                </tr>
-                <tr>
-                    <td>天干</td>
-                    <td><select id="dy_tg_1" class="tg-select" onchange="updateStemColor(this)"></select></td>
-                    <td><select id="dy_tg_2" class="tg-select" onchange="updateStemColor(this)"></select></td>
-                    <td><select id="dy_tg_3" class="tg-select" onchange="updateStemColor(this)"></select></td>
-                    <td><select id="dy_tg_4" class="tg-select" onchange="updateStemColor(this)"></select></td>
-                    <td><select id="dy_tg_5" class="tg-select" onchange="updateStemColor(this)"></select></td>
-                    <td><select id="dy_tg_6" class="tg-select" onchange="updateStemColor(this)"></select></td>
-                    <td><select id="dy_tg_7" class="tg-select" onchange="updateStemColor(this)"></select></td>
-                    <td><select id="dy_tg_8" class="tg-select" onchange="updateStemColor(this)"></select></td>
-                </tr>
-                <tr>
-                    <td>地支</td>
-                    <td><div id="dy_dz_1" class="dz-box" onclick="showDzMenu(event, this)"></div></td>
-                    <td><div id="dy_dz_2" class="dz-box" onclick="showDzMenu(event, this)"></div></td>
-                    <td><div id="dy_dz_3" class="dz-box" onclick="showDzMenu(event, this)"></div></td>
-                    <td><div id="dy_dz_4" class="dz-box" onclick="showDzMenu(event, this)"></div></td>
-                    <td><div id="dy_dz_5" class="dz-box" onclick="showDzMenu(event, this)"></div></td>
-                    <td><div id="dy_dz_6" class="dz-box" onclick="showDzMenu(event, this)"></div></td>
-                    <td><div id="dy_dz_7" class="dz-box" onclick="showDzMenu(event, this)"></div></td>
-                    <td><div id="dy_dz_8" class="dz-box" onclick="showDzMenu(event, this)"></div></td>
-                </tr>
-            </table>
+            <div class="table-wrapper">
+                <table>
+                    <tr>
+                        <td>岁数</td>
+                        <td><input type="text" id="dy_age_1"></td>
+                        <td><input type="text" id="dy_age_2"></td>
+                        <td><input type="text" id="dy_age_3"></td>
+                        <td><input type="text" id="dy_age_4"></td>
+                        <td><input type="text" id="dy_age_5"></td>
+                        <td><input type="text" id="dy_age_6"></td>
+                        <td><input type="text" id="dy_age_7"></td>
+                        <td><input type="text" id="dy_age_8"></td>
+                    </tr>
+                    <tr>
+                        <td>天干</td>
+                        <td><select id="dy_tg_1" class="tg-select" onchange="updateStemColor(this)"></select></td>
+                        <td><select id="dy_tg_2" class="tg-select" onchange="updateStemColor(this)"></select></td>
+                        <td><select id="dy_tg_3" class="tg-select" onchange="updateStemColor(this)"></select></td>
+                        <td><select id="dy_tg_4" class="tg-select" onchange="updateStemColor(this)"></select></td>
+                        <td><select id="dy_tg_5" class="tg-select" onchange="updateStemColor(this)"></select></td>
+                        <td><select id="dy_tg_6" class="tg-select" onchange="updateStemColor(this)"></select></td>
+                        <td><select id="dy_tg_7" class="tg-select" onchange="updateStemColor(this)"></select></td>
+                        <td><select id="dy_tg_8" class="tg-select" onchange="updateStemColor(this)"></select></td>
+                    </tr>
+                    <tr>
+                        <td>地支</td>
+                        <td><div id="dy_dz_1" class="dz-box" onclick="showDzMenu(event, this)"></div></td>
+                        <td><div id="dy_dz_2" class="dz-box" onclick="showDzMenu(event, this)"></div></td>
+                        <td><div id="dy_dz_3" class="dz-box" onclick="showDzMenu(event, this)"></div></td>
+                        <td><div id="dy_dz_4" class="dz-box" onclick="showDzMenu(event, this)"></div></td>
+                        <td><div id="dy_dz_5" class="dz-box" onclick="showDzMenu(event, this)"></div></td>
+                        <td><div id="dy_dz_6" class="dz-box" onclick="showDzMenu(event, this)"></div></td>
+                        <td><div id="dy_dz_7" class="dz-box" onclick="showDzMenu(event, this)"></div></td>
+                        <td><div id="dy_dz_8" class="dz-box" onclick="showDzMenu(event, this)"></div></td>
+                    </tr>
+                </table>
+            </div>
         </div>
 
-        <!-- 地支选择菜单 -->
         <div id="globalDzMenu" class="dz-menu"></div>
 
-        <!-- 定格局/定寒燥等其余板块保持不变 -->
         <div class="section">
             <div class="section-title">一、定格局</div>
             <div class="row-inputs">
@@ -203,12 +222,14 @@
 
         <div class="section">
             <div class="section-title">三、定病药</div>
-            <table>
-                <tr><th>级别</th><th>五行</th><th>五识</th><th>有/无</th><th>旺/相</th><th>根有/无</th><th>强/弱</th><th>意识</th></tr>
-                <tr><td>君</td><td><input type="text" id="by_jun_wx"></td><td><input type="text" id="by_jun_ws"></td><td><input type="text" id="by_jun_exists"></td><td><input type="text" id="by_jun_status"></td><td><input type="text" id="by_jun_root"></td><td><input type="text" id="by_jun_str"></td><td><input type="text" id="by_jun_mind"></td></tr>
-                <tr><td>臣</td><td><input type="text" id="by_chen_wx"></td><td><input type="text" id="by_chen_ws"></td><td><input type="text" id="by_chen_exists"></td><td><input type="text" id="by_chen_status"></td><td><input type="text" id="by_chen_root"></td><td><input type="text" id="by_chen_str"></td><td><input type="text" id="by_chen_mind"></td></tr>
-                <tr><td>次</td><td><input type="text" id="by_ci_wx"></td><td><input type="text" id="by_ci_ws"></td><td><input type="text" id="by_ci_exists"></td><td><input type="text" id="by_ci_status"></td><td><input type="text" id="by_ci_root"></td><td><input type="text" id="by_ci_str"></td><td><input type="text" id="by_ci_mind"></td></tr>
-            </table>
+            <div class="table-wrapper">
+                <table>
+                    <tr><th>级别</th><th>五行</th><th>五识</th><th>有/无</th><th>旺/相</th><th>根有/无</th><th>强/弱</th><th>意识</th></tr>
+                    <tr><td>君</td><td><input type="text" id="by_jun_wx"></td><td><input type="text" id="by_jun_ws"></td><td><input type="text" id="by_jun_exists"></td><td><input type="text" id="by_jun_status"></td><td><input type="text" id="by_jun_root"></td><td><input type="text" id="by_jun_str"></td><td><input type="text" id="by_jun_mind"></td></tr>
+                    <tr><td>臣</td><td><input type="text" id="by_chen_wx"></td><td><input type="text" id="by_chen_ws"></td><td><input type="text" id="by_chen_exists"></td><td><input type="text" id="by_chen_status"></td><td><input type="text" id="by_chen_root"></td><td><input type="text" id="by_chen_str"></td><td><input type="text" id="by_chen_mind"></td></tr>
+                    <tr><td>次</td><td><input type="text" id="by_ci_wx"></td><td><input type="text" id="by_ci_ws"></td><td><input type="text" id="by_ci_exists"></td><td><input type="text" id="by_ci_status"></td><td><input type="text" id="by_ci_root"></td><td><input type="text" id="by_ci_str"></td><td><input type="text" id="by_ci_mind"></td></tr>
+                </table>
+            </div>
         </div>
 
         <div class="section">
@@ -223,22 +244,23 @@
         <div class="section">
             <div class="section-title">五、看大运</div>
             <div id="dayun_list">
-                <div class="row-inputs"><input type="text" style="width: 60px;">大运 失/平衡<input type="text" style="width: 40px;"> 意识变化：<input type="text" class="full-width-input"></div>
-                <div class="row-inputs"><input type="text" style="width: 60px;">大运 失/平衡<input type="text" style="width: 40px;"> 意识：<input type="text" class="full-width-input"></div>
-                <div class="row-inputs"><input type="text" style="width: 60px;">大运 失/平衡<input type="text" style="width: 40px;"> 意识：<input type="text" class="full-width-input"></div>
-                <div class="row-inputs"><input type="text" style="width: 60px;">大运 失/平衡<input type="text" style="width: 40px;"> 意识：<input type="text" class="full-width-input"></div>
+                <div class="row-inputs"><input type="text" style="width: 80px;">大运 失/平衡<input type="text" style="width: 60px;"> 意识变化：<input type="text" class="full-width-input"></div>
+                <div class="row-inputs"><input type="text" style="width: 80px;">大运 失/平衡<input type="text" style="width: 60px;"> 意识：<input type="text" class="full-width-input"></div>
+                <div class="row-inputs"><input type="text" style="width: 80px;">大运 失/平衡<input type="text" style="width: 60px;"> 意识：<input type="text" class="full-width-input"></div>
+                <div class="row-inputs"><input type="text" style="width: 80px;">大运 失/平衡<input type="text" style="width: 60px;"> 意识：<input type="text" class="full-width-input"></div>
             </div>
         </div>
 
         <div class="section">
             <div class="section-title">六、和我的异同</div>
-            <textarea id="my_diff"></textarea>
+            <textarea id="my_diff" placeholder="在此录入记录..."></textarea>
         </div>
 
         <div class="actions">
             <button type="button" class="btn btn-save" onclick="saveMarkdown()">保存为 Markdown</button>
             <button type="reset" class="btn btn-clear">重置表单</button>
         </div>
+        <p class="hint">数据将保存至您的下载文件夹，您可以将其移动至 AI 知识库目录。</p>
     </form>
 </div>
 
@@ -270,7 +292,6 @@
     let currentDzBox = null;
 
     function initForm() {
-        // 初始化天干
         const selects = document.querySelectorAll('.tg-select');
         selects.forEach(select => {
             ['', '甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'].forEach(s => {
@@ -281,7 +302,6 @@
             });
         });
 
-        // 初始化地支菜单
         const menu = document.getElementById('globalDzMenu');
         branches.forEach(dz => {
             const item = document.createElement('div');
@@ -292,9 +312,8 @@
             menu.appendChild(item);
         });
 
-        // 点击空白处关闭菜单
         document.addEventListener('click', (e) => {
-            if (!e.target.classList.contains('dz-box') && !e.target.classList.contains('dz-item')) {
+            if (!e.target.classList.contains('dz-box') && !e.target.closest('.dz-item')) {
                 menu.style.display = 'none';
             }
         });
@@ -309,13 +328,20 @@
         currentDzBox = box;
         const menu = document.getElementById('globalDzMenu');
         menu.style.display = 'grid';
-        menu.style.left = e.pageX + 'px';
-        menu.style.top = e.pageY + 'px';
+        
+        // 移动端菜单位置优化
+        if (window.innerWidth <= 768) {
+            menu.style.left = '10%';
+            menu.style.top = (e.pageY + 20) + 'px';
+        } else {
+            menu.style.left = e.pageX + 'px';
+            menu.style.top = e.pageY + 'px';
+        }
     }
 
     function selectDz(dz) {
-        let html = `<span style="color:${dz.color}">${dz.name}</span>`;
-        html += `<span style="color:#666; font-size:11px;">(`;
+        let html = `<span style="color:${dz.color}; font-size: 18px;">${dz.name}</span>`;
+        html += `<span style="color:#666; font-size:10px; margin-left: 2px;">(`;
         dz.hidden.forEach((h, i) => {
             html += `<span style="color:${stemColors[h]}">${h}</span>`;
             if (i < dz.hidden.length - 1) html += `<span style="color:#ccc">、</span>`;
@@ -346,7 +372,6 @@
         md += `| 天干 | ${getV('dy_tg_1')} | ${getV('dy_tg_2')} | ${getV('dy_tg_3')} | ${getV('dy_tg_4')} | ${getV('dy_tg_5')} | ${getV('dy_tg_6')} | ${getV('dy_tg_7')} | ${getV('dy_tg_8')} |\n`;
         md += `| 地支 | ${getDz('dy_dz_1')} | ${getDz('dy_dz_2')} | ${getDz('dy_dz_3')} | ${getDz('dy_dz_4')} | ${getDz('dy_dz_5')} | ${getDz('dy_dz_6')} | ${getDz('dy_dz_7')} | ${getDz('dy_dz_8')} |\n\n`;
 
-        // 其他板块逻辑
         md += `## 一、定格局\n- **基础**: ${getV('gj_base')} 生于 ${getV('gj_month')} 月季节 ${getV('gj_season')}\n- **1. 强/弱**: ${getV('gj_strength')}，局型：${getV('gj_type')}\n- **2. 根**: ${getV('gj_root')}\n- **3. 扶抑/从**: ${getV('gj_follow')}局\n- **画像**: ${getV('gj_portrait')}\n- **天赋本能**: ${getV('gj_talent')}\n\n`;
         md += `## 二、定寒燥\n- **状态**: ${getV('hz_base')}\n- **调候药**: ${getV('hz_medicine')} (有/无: ${getV('hz_exists')})\n- **意识**: 喜 [${getV('hz_like')}], 不喜 [${getV('hz_dislike')}]\n\n`;
         
