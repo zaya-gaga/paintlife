@@ -12,8 +12,49 @@
         .section-title { font-weight: bold; font-size: 1.1em; margin-bottom: 15px; color: #444; }
         .input-group { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 10px; }
         .field { display: flex; align-items: center; gap: 5px; }
-        input[type="text"], input[type="date"], select { border: none; border-bottom: 1px solid #999; padding: 5px; outline: none; background: #fcfcfc; }
-        input[type="text"]:focus { border-bottom: 2px solid #007bff; background: #fff; }
+        
+        input[type="text"], select { border: none; border-bottom: 1px solid #999; padding: 5px; outline: none; background: #fcfcfc; font-size: 14px; }
+        input[type="text"]:focus, select:focus { border-bottom: 2px solid #007bff; background: #fff; }
+        
+        /* 天干地支通用下拉样式 */
+        select.tg-select { font-weight: bold; width: 60px; text-align: center; cursor: pointer; }
+        
+        /* 地支盒子样式 */
+        .dz-box { 
+            min-width: 80px; 
+            min-height: 25px; 
+            border-bottom: 1px solid #999; 
+            cursor: pointer; 
+            display: inline-block; 
+            text-align: center; 
+            font-weight: bold;
+            font-size: 13px;
+            vertical-align: middle;
+            background: #fcfcfc;
+        }
+        .dz-box:empty::before { content: ""; }
+
+        /* 弹出菜单样式 */
+        .dz-menu {
+            display: none;
+            position: absolute;
+            background: white;
+            border: 1px solid #ccc;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            z-index: 1000;
+            padding: 10px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            border-radius: 5px;
+        }
+        .dz-item {
+            padding: 5px 10px;
+            cursor: pointer;
+            border: 1px solid #eee;
+            text-align: center;
+            border-radius: 3px;
+        }
+        .dz-item:hover { background: #f0f0f0; }
         
         table { width: 100%; border-collapse: collapse; margin: 10px 0; }
         th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
@@ -74,17 +115,17 @@
                 </tr>
                 <tr>
                     <td>天干</td>
-                    <td><input type="text" id="ming_tg_year"></td>
-                    <td><input type="text" id="ming_tg_month"></td>
-                    <td><input type="text" id="ming_tg_day"></td>
-                    <td><input type="text" id="ming_tg_hour"></td>
+                    <td><select id="ming_tg_year" class="tg-select" onchange="updateStemColor(this)"></select></td>
+                    <td><select id="ming_tg_month" class="tg-select" onchange="updateStemColor(this)"></select></td>
+                    <td><select id="ming_tg_day" class="tg-select" onchange="updateStemColor(this)"></select></td>
+                    <td><select id="ming_tg_hour" class="tg-select" onchange="updateStemColor(this)"></select></td>
                 </tr>
                 <tr>
                     <td>地支</td>
-                    <td><input type="text" id="ming_dz_year"></td>
-                    <td><input type="text" id="ming_dz_month"></td>
-                    <td><input type="text" id="ming_dz_day"></td>
-                    <td><input type="text" id="ming_dz_hour"></td>
+                    <td><div id="ming_dz_year" class="dz-box" onclick="showDzMenu(event, this)"></div></td>
+                    <td><div id="ming_dz_month" class="dz-box" onclick="showDzMenu(event, this)"></div></td>
+                    <td><div id="ming_dz_day" class="dz-box" onclick="showDzMenu(event, this)"></div></td>
+                    <td><div id="ming_dz_hour" class="dz-box" onclick="showDzMenu(event, this)"></div></td>
                 </tr>
             </table>
         </div>
@@ -106,30 +147,33 @@
                 </tr>
                 <tr>
                     <td>天干</td>
-                    <td><input type="text" id="dy_tg_1"></td>
-                    <td><input type="text" id="dy_tg_2"></td>
-                    <td><input type="text" id="dy_tg_3"></td>
-                    <td><input type="text" id="dy_tg_4"></td>
-                    <td><input type="text" id="dy_tg_5"></td>
-                    <td><input type="text" id="dy_tg_6"></td>
-                    <td><input type="text" id="dy_tg_7"></td>
-                    <td><input type="text" id="dy_tg_8"></td>
+                    <td><select id="dy_tg_1" class="tg-select" onchange="updateStemColor(this)"></select></td>
+                    <td><select id="dy_tg_2" class="tg-select" onchange="updateStemColor(this)"></select></td>
+                    <td><select id="dy_tg_3" class="tg-select" onchange="updateStemColor(this)"></select></td>
+                    <td><select id="dy_tg_4" class="tg-select" onchange="updateStemColor(this)"></select></td>
+                    <td><select id="dy_tg_5" class="tg-select" onchange="updateStemColor(this)"></select></td>
+                    <td><select id="dy_tg_6" class="tg-select" onchange="updateStemColor(this)"></select></td>
+                    <td><select id="dy_tg_7" class="tg-select" onchange="updateStemColor(this)"></select></td>
+                    <td><select id="dy_tg_8" class="tg-select" onchange="updateStemColor(this)"></select></td>
                 </tr>
                 <tr>
                     <td>地支</td>
-                    <td><input type="text" id="dy_dz_1"></td>
-                    <td><input type="text" id="dy_dz_2"></td>
-                    <td><input type="text" id="dy_dz_3"></td>
-                    <td><input type="text" id="dy_dz_4"></td>
-                    <td><input type="text" id="dy_dz_5"></td>
-                    <td><input type="text" id="dy_dz_6"></td>
-                    <td><input type="text" id="dy_dz_7"></td>
-                    <td><input type="text" id="dy_dz_8"></td>
+                    <td><div id="dy_dz_1" class="dz-box" onclick="showDzMenu(event, this)"></div></td>
+                    <td><div id="dy_dz_2" class="dz-box" onclick="showDzMenu(event, this)"></div></td>
+                    <td><div id="dy_dz_3" class="dz-box" onclick="showDzMenu(event, this)"></div></td>
+                    <td><div id="dy_dz_4" class="dz-box" onclick="showDzMenu(event, this)"></div></td>
+                    <td><div id="dy_dz_5" class="dz-box" onclick="showDzMenu(event, this)"></div></td>
+                    <td><div id="dy_dz_6" class="dz-box" onclick="showDzMenu(event, this)"></div></td>
+                    <td><div id="dy_dz_7" class="dz-box" onclick="showDzMenu(event, this)"></div></td>
+                    <td><div id="dy_dz_8" class="dz-box" onclick="showDzMenu(event, this)"></div></td>
                 </tr>
             </table>
         </div>
 
-        <!-- 定格局 -->
+        <!-- 地支选择菜单 -->
+        <div id="globalDzMenu" class="dz-menu"></div>
+
+        <!-- 定格局/定寒燥等其余板块保持不变 -->
         <div class="section">
             <div class="section-title">一、定格局</div>
             <div class="row-inputs">
@@ -144,7 +188,6 @@
             <div class="row-inputs">天赋本能：<input type="text" id="gj_talent" class="full-width-input"></div>
         </div>
 
-        <!-- 定寒燥 -->
         <div class="section">
             <div class="section-title">二、定寒燥</div>
             <div class="row-inputs">
@@ -158,54 +201,16 @@
             </div>
         </div>
 
-        <!-- 定病药 Table -->
         <div class="section">
             <div class="section-title">三、定病药</div>
             <table>
-                <tr>
-                    <th>级别</th>
-                    <th>五行</th>
-                    <th>五识</th>
-                    <th>有/无</th>
-                    <th>旺/相</th>
-                    <th>根有/无</th>
-                    <th>强/弱</th>
-                    <th>意识</th>
-                </tr>
-                <tr>
-                    <td>君</td>
-                    <td><input type="text" id="by_jun_wx"></td>
-                    <td><input type="text" id="by_jun_ws"></td>
-                    <td><input type="text" id="by_jun_exists"></td>
-                    <td><input type="text" id="by_jun_status"></td>
-                    <td><input type="text" id="by_jun_root"></td>
-                    <td><input type="text" id="by_jun_str"></td>
-                    <td><input type="text" id="by_jun_mind"></td>
-                </tr>
-                <tr>
-                    <td>臣</td>
-                    <td><input type="text" id="by_chen_wx"></td>
-                    <td><input type="text" id="by_chen_ws"></td>
-                    <td><input type="text" id="by_chen_exists"></td>
-                    <td><input type="text" id="by_chen_status"></td>
-                    <td><input type="text" id="by_chen_root"></td>
-                    <td><input type="text" id="by_chen_str"></td>
-                    <td><input type="text" id="by_chen_mind"></td>
-                </tr>
-                <tr>
-                    <td>次</td>
-                    <td><input type="text" id="by_ci_wx"></td>
-                    <td><input type="text" id="by_ci_ws"></td>
-                    <td><input type="text" id="by_ci_exists"></td>
-                    <td><input type="text" id="by_ci_status"></td>
-                    <td><input type="text" id="by_ci_root"></td>
-                    <td><input type="text" id="by_ci_str"></td>
-                    <td><input type="text" id="by_ci_mind"></td>
-                </tr>
+                <tr><th>级别</th><th>五行</th><th>五识</th><th>有/无</th><th>旺/相</th><th>根有/无</th><th>强/弱</th><th>意识</th></tr>
+                <tr><td>君</td><td><input type="text" id="by_jun_wx"></td><td><input type="text" id="by_jun_ws"></td><td><input type="text" id="by_jun_exists"></td><td><input type="text" id="by_jun_status"></td><td><input type="text" id="by_jun_root"></td><td><input type="text" id="by_jun_str"></td><td><input type="text" id="by_jun_mind"></td></tr>
+                <tr><td>臣</td><td><input type="text" id="by_chen_wx"></td><td><input type="text" id="by_chen_ws"></td><td><input type="text" id="by_chen_exists"></td><td><input type="text" id="by_chen_status"></td><td><input type="text" id="by_chen_root"></td><td><input type="text" id="by_chen_str"></td><td><input type="text" id="by_chen_mind"></td></tr>
+                <tr><td>次</td><td><input type="text" id="by_ci_wx"></td><td><input type="text" id="by_ci_ws"></td><td><input type="text" id="by_ci_exists"></td><td><input type="text" id="by_ci_status"></td><td><input type="text" id="by_ci_root"></td><td><input type="text" id="by_ci_str"></td><td><input type="text" id="by_ci_mind"></td></tr>
             </table>
         </div>
 
-        <!-- 定流动 -->
         <div class="section">
             <div class="section-title">四、定流动</div>
             <div class="row-inputs">
@@ -215,34 +220,16 @@
             </div>
         </div>
 
-        <!-- 看大运 -->
         <div class="section">
             <div class="section-title">五、看大运</div>
             <div id="dayun_list">
-                <div class="row-inputs">
-                    <input type="text" style="width: 60px;">大运 
-                    失/平衡<input type="text" style="width: 40px;"> 
-                    意识变化：<input type="text" class="full-width-input">
-                </div>
-                <div class="row-inputs">
-                    <input type="text" style="width: 60px;">大运 
-                    失/平衡<input type="text" style="width: 40px;"> 
-                    意识：<input type="text" class="full-width-input">
-                </div>
-                <div class="row-inputs">
-                    <input type="text" style="width: 60px;">大运 
-                    失/平衡<input type="text" style="width: 40px;"> 
-                    意识：<input type="text" class="full-width-input">
-                </div>
-                <div class="row-inputs">
-                    <input type="text" style="width: 60px;">大运 
-                    失/平衡<input type="text" style="width: 40px;"> 
-                    意识：<input type="text" class="full-width-input">
-                </div>
+                <div class="row-inputs"><input type="text" style="width: 60px;">大运 失/平衡<input type="text" style="width: 40px;"> 意识变化：<input type="text" class="full-width-input"></div>
+                <div class="row-inputs"><input type="text" style="width: 60px;">大运 失/平衡<input type="text" style="width: 40px;"> 意识：<input type="text" class="full-width-input"></div>
+                <div class="row-inputs"><input type="text" style="width: 60px;">大运 失/平衡<input type="text" style="width: 40px;"> 意识：<input type="text" class="full-width-input"></div>
+                <div class="row-inputs"><input type="text" style="width: 60px;">大运 失/平衡<input type="text" style="width: 40px;"> 意识：<input type="text" class="full-width-input"></div>
             </div>
         </div>
 
-        <!-- 和我的异同 -->
         <div class="section">
             <div class="section-title">六、和我的异同</div>
             <textarea id="my_diff"></textarea>
@@ -252,90 +239,136 @@
             <button type="button" class="btn btn-save" onclick="saveMarkdown()">保存为 Markdown</button>
             <button type="reset" class="btn btn-clear">重置表单</button>
         </div>
-        <p class="hint">数据将保存至您的下载文件夹，您可以将其移动至 AI 知识库目录。</p>
     </form>
 </div>
 
 <script>
+    const stemColors = {
+        '甲': '#28a745', '乙': '#28a745',
+        '丙': '#dc3545', '丁': '#dc3545',
+        '戊': '#8B4513', '己': '#8B4513',
+        '庚': '#6c757d', '辛': '#6c757d',
+        '壬': '#007bff', '癸': '#007bff',
+        '': '#000'
+    };
+
+    const branches = [
+        { name: '寅', color: '#28a745', hidden: ['甲', '丙', '戊'] },
+        { name: '卯', color: '#28a745', hidden: ['乙'] },
+        { name: '辰', color: '#8B4513', hidden: ['戊', '乙', '癸'] },
+        { name: '巳', color: '#dc3545', hidden: ['丙', '庚', '戊'] },
+        { name: '午', color: '#dc3545', hidden: ['丁', '己'] },
+        { name: '未', color: '#8B4513', hidden: ['己', '乙', '丁'] },
+        { name: '申', color: '#6c757d', hidden: ['庚', '壬', '戊'] },
+        { name: '酉', color: '#6c757d', hidden: ['辛'] },
+        { name: '戌', color: '#8B4513', hidden: ['戊', '辛', '丁'] },
+        { name: '亥', color: '#007bff', hidden: ['壬', '甲'] },
+        { name: '子', color: '#007bff', hidden: ['癸'] },
+        { name: '丑', color: '#8B4513', hidden: ['己', '辛', '癸'] }
+    ];
+
+    let currentDzBox = null;
+
+    function initForm() {
+        // 初始化天干
+        const selects = document.querySelectorAll('.tg-select');
+        selects.forEach(select => {
+            ['', '甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'].forEach(s => {
+                const opt = document.createElement('option');
+                opt.value = s; opt.textContent = s;
+                opt.style.color = stemColors[s];
+                select.appendChild(opt);
+            });
+        });
+
+        // 初始化地支菜单
+        const menu = document.getElementById('globalDzMenu');
+        branches.forEach(dz => {
+            const item = document.createElement('div');
+            item.className = 'dz-item';
+            item.style.color = dz.color;
+            item.textContent = dz.name;
+            item.onclick = () => selectDz(dz);
+            menu.appendChild(item);
+        });
+
+        // 点击空白处关闭菜单
+        document.addEventListener('click', (e) => {
+            if (!e.target.classList.contains('dz-box') && !e.target.classList.contains('dz-item')) {
+                menu.style.display = 'none';
+            }
+        });
+    }
+
+    function updateStemColor(el) {
+        el.style.color = stemColors[el.value];
+    }
+
+    function showDzMenu(e, box) {
+        e.stopPropagation();
+        currentDzBox = box;
+        const menu = document.getElementById('globalDzMenu');
+        menu.style.display = 'grid';
+        menu.style.left = e.pageX + 'px';
+        menu.style.top = e.pageY + 'px';
+    }
+
+    function selectDz(dz) {
+        let html = `<span style="color:${dz.color}">${dz.name}</span>`;
+        html += `<span style="color:#666; font-size:11px;">(`;
+        dz.hidden.forEach((h, i) => {
+            html += `<span style="color:${stemColors[h]}">${h}</span>`;
+            if (i < dz.hidden.length - 1) html += `<span style="color:#ccc">、</span>`;
+        });
+        html += `)</span>`;
+        
+        currentDzBox.innerHTML = html;
+        currentDzBox.setAttribute('data-value', dz.name + '(' + dz.hidden.join('、') + ')');
+        document.getElementById('globalDzMenu').style.display = 'none';
+    }
+
+    window.onload = initForm;
+
     function saveMarkdown() {
         const name = document.getElementById('name').value || '未命名';
         const dateStr = new Date().toISOString().split('T')[0];
-        
+        const getV = (id) => document.getElementById(id).value;
+        const getDz = (id) => document.getElementById(id).getAttribute('data-value') || '';
+
         let md = `# 易思合道作业纸 - ${name}\n\n`;
-        md += `## 基本信息\n`;
-        md += `- **姓名**: ${name}\n`;
-        md += `- **生辰**: ${document.getElementById('year').value}年${document.getElementById('month').value}月${document.getElementById('day').value}日 ${document.getElementById('hour').value}时\n`;
-        md += `- **性别**: ${document.getElementById('gender').value}\n\n`;
+        md += `## 基本信息\n- **姓名**: ${name}\n- **生辰**: ${getV('year')}年${getV('month')}月${getV('day')}日 ${getV('hour')}时\n- **性别**: ${getV('gender')}\n\n`;
 
-        // 命盘
-        md += `## 命盘\n`;
-        md += `| 柱 | 年 | 月 | 日 | 时 |\n`;
-        md += `| :--- | :--- | :--- | :--- | :--- |\n`;
-        md += `| 天干 | ${document.getElementById('ming_tg_year').value} | ${document.getElementById('ming_tg_month').value} | ${document.getElementById('ming_tg_day').value} | ${document.getElementById('ming_tg_hour').value} |\n`;
-        md += `| 地支 | ${document.getElementById('ming_dz_year').value} | ${document.getElementById('ming_dz_month').value} | ${document.getElementById('ming_dz_day').value} | ${document.getElementById('ming_dz_hour').value} |\n\n`;
+        md += `## 命盘\n| 柱 | 年 | 月 | 日 | 时 |\n| :--- | :--- | :--- | :--- | :--- |\n`;
+        md += `| 天干 | ${getV('ming_tg_year')} | ${getV('ming_tg_month')} | ${getV('ming_tg_day')} | ${getV('ming_tg_hour')} |\n`;
+        md += `| 地支 | ${getDz('ming_dz_year')} | ${getDz('ming_dz_month')} | ${getDz('ming_dz_day')} | ${getDz('ming_dz_hour')} |\n\n`;
 
-        // 大运表
-        md += `## 大运排列\n`;
-        md += `| 运数 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |\n`;
-        md += `| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |\n`;
-        md += `| 岁数 | ${document.getElementById('dy_age_1').value} | ${document.getElementById('dy_age_2').value} | ${document.getElementById('dy_age_3').value} | ${document.getElementById('dy_age_4').value} | ${document.getElementById('dy_age_5').value} | ${document.getElementById('dy_age_6').value} | ${document.getElementById('dy_age_7').value} | ${document.getElementById('dy_age_8').value} |\n`;
-        md += `| 天干 | ${document.getElementById('dy_tg_1').value} | ${document.getElementById('dy_tg_2').value} | ${document.getElementById('dy_tg_3').value} | ${document.getElementById('dy_tg_4').value} | ${document.getElementById('dy_tg_5').value} | ${document.getElementById('dy_tg_6').value} | ${document.getElementById('dy_tg_7').value} | ${document.getElementById('dy_tg_8').value} |\n`;
-        md += `| 地支 | ${document.getElementById('dy_dz_1').value} | ${document.getElementById('dy_dz_2').value} | ${document.getElementById('dy_dz_3').value} | ${document.getElementById('dy_dz_4').value} | ${document.getElementById('dy_dz_5').value} | ${document.getElementById('dy_dz_6').value} | ${document.getElementById('dy_dz_7').value} | ${document.getElementById('dy_dz_8').value} |\n\n`;
+        md += `## 大运排列\n| 岁数 | ${getV('dy_age_1')} | ${getV('dy_age_2')} | ${getV('dy_age_3')} | ${getV('dy_age_4')} | ${getV('dy_age_5')} | ${getV('dy_age_6')} | ${getV('dy_age_7')} | ${getV('dy_age_8')} |\n`;
+        md += `| 天干 | ${getV('dy_tg_1')} | ${getV('dy_tg_2')} | ${getV('dy_tg_3')} | ${getV('dy_tg_4')} | ${getV('dy_tg_5')} | ${getV('dy_tg_6')} | ${getV('dy_tg_7')} | ${getV('dy_tg_8')} |\n`;
+        md += `| 地支 | ${getDz('dy_dz_1')} | ${getDz('dy_dz_2')} | ${getDz('dy_dz_3')} | ${getDz('dy_dz_4')} | ${getDz('dy_dz_5')} | ${getDz('dy_dz_6')} | ${getDz('dy_dz_7')} | ${getDz('dy_dz_8')} |\n\n`;
 
-        // 定格局
-        md += `## 一、定格局\n`;
-        md += `- **基础**: ${document.getElementById('gj_base').value} 生于 ${document.getElementById('gj_month').value} 月季节 ${document.getElementById('gj_season').value}\n`;
-        md += `- **1. 强/弱**: ${document.getElementById('gj_strength').value}，局型：${document.getElementById('gj_type').value}\n`;
-        md += `- **2. 根**: ${document.getElementById('gj_root').value}\n`;
-        md += `- **3. 扶抑/从**: ${document.getElementById('gj_follow').value}局\n`;
-        md += `- **画像**: ${document.getElementById('gj_portrait').value}\n`;
-        md += `- **天赋本能**: ${document.getElementById('gj_talent').value}\n\n`;
-
-        // 定寒燥
-        md += `## 二、定寒燥\n`;
-        md += `- **状态**: ${document.getElementById('hz_base').value}\n`;
-        md += `- **调候药**: ${document.getElementById('hz_medicine').value} (有/无: ${document.getElementById('hz_exists').value})\n`;
-        md += `- **意识**: 喜 [${document.getElementById('hz_like').value}], 不喜 [${document.getElementById('hz_dislike').value}]\n\n`;
-
-        // 定病药
-        md += `## 三、定病药\n`;
-        md += `| 级别 | 五行 | 五识 | 有/无 | 旺/相 | 根有/无 | 强/弱 | 意识 |\n`;
-        md += `| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |\n`;
-        md += `| 君 | ${document.getElementById('by_jun_wx').value} | ${document.getElementById('by_jun_ws').value} | ${document.getElementById('by_jun_exists').value} | ${document.getElementById('by_jun_status').value} | ${document.getElementById('by_jun_root').value} | ${document.getElementById('by_jun_str').value} | ${document.getElementById('by_jun_mind').value} |\n`;
-        md += `| 臣 | ${document.getElementById('by_chen_wx').value} | ${document.getElementById('by_chen_ws').value} | ${document.getElementById('by_chen_exists').value} | ${document.getElementById('by_chen_status').value} | ${document.getElementById('by_chen_root').value} | ${document.getElementById('by_chen_str').value} | ${document.getElementById('by_chen_mind').value} |\n`;
-        md += `| 次 | ${document.getElementById('by_ci_wx').value} | ${document.getElementById('by_ci_ws').value} | ${document.getElementById('by_ci_exists').value} | ${document.getElementById('by_ci_status').value} | ${document.getElementById('by_ci_root').value} | ${document.getElementById('by_ci_str').value} | ${document.getElementById('by_ci_mind').value} |\n\n`;
-
-        // 定流动
-        md += `## 四、定流动\n`;
-        md += `- **断点**: ${document.getElementById('ld_break').value}\n`;
-        md += `- **暗旺是病/药**: ${document.getElementById('ld_hidden').value}\n`;
-        md += `- **意识**: ${document.getElementById('ld_mind').value}\n\n`;
-
-        // 看大运
-        md += `## 五、看大运\n`;
-        const dyInputs = document.querySelectorAll('#dayun_list .row-inputs');
-        dyInputs.forEach((row, i) => {
-            const inputs = row.querySelectorAll('input');
-            if(inputs[0].value) {
-                md += `- **${inputs[0].value}大运**: 失/平衡[${inputs[1].value}], 意识: ${inputs[2].value}\n`;
-            }
+        // 其他板块逻辑
+        md += `## 一、定格局\n- **基础**: ${getV('gj_base')} 生于 ${getV('gj_month')} 月季节 ${getV('gj_season')}\n- **1. 强/弱**: ${getV('gj_strength')}，局型：${getV('gj_type')}\n- **2. 根**: ${getV('gj_root')}\n- **3. 扶抑/从**: ${getV('gj_follow')}局\n- **画像**: ${getV('gj_portrait')}\n- **天赋本能**: ${getV('gj_talent')}\n\n`;
+        md += `## 二、定寒燥\n- **状态**: ${getV('hz_base')}\n- **调候药**: ${getV('hz_medicine')} (有/无: ${getV('hz_exists')})\n- **意识**: 喜 [${getV('hz_like')}], 不喜 [${getV('hz_dislike')}]\n\n`;
+        
+        md += `## 三、定病药\n| 级别 | 五行 | 五识 | 有/无 | 旺/相 | 根有/无 | 强/弱 | 意识 |\n| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |\n`;
+        ['jun', 'chen', 'ci'].forEach(lv => {
+            md += `| ${lv==='jun'?'君':lv==='chen'?'臣':'次'} | ${getV('by_'+lv+'_wx')} | ${getV('by_'+lv+'_ws')} | ${getV('by_'+lv+'_exists')} | ${getV('by_'+lv+'_status')} | ${getV('by_'+lv+'_root')} | ${getV('by_'+lv+'_str')} | ${getV('by_'+lv+'_mind')} |\n`;
         });
-        md += `\n`;
 
-        // 和我的异同
-        md += `## 六、和我的异同\n`;
-        md += `${document.getElementById('my_diff').value || '无'}\n`;
+        md += `\n## 四、定流动\n- **断点**: ${getV('ld_break')}\n- **暗旺是病/药**: ${getV('ld_hidden')}\n- **意识**: ${getV('ld_mind')}\n\n`;
+        md += `## 五、看大运\n`;
+        document.querySelectorAll('#dayun_list .row-inputs').forEach(row => {
+            const ins = row.querySelectorAll('input');
+            if(ins[0].value) md += `- **${ins[0].value}大运**: 失/平衡[${ins[1].value}], 意识: ${ins[2].value}\n`;
+        });
+        md += `\n## 六、和我的异同\n${getV('my_diff') || '无'}\n`;
 
-        // 导出文件
         const blob = new Blob([md], { type: 'text/markdown' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
-        a.href = url;
-        a.download = `${name}-${dateStr}.md`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+        a.href = url; a.download = `${name}-${dateStr}.md`;
+        document.body.appendChild(a); a.click();
+        document.body.removeChild(a); URL.revokeObjectURL(url);
     }
 </script>
 
