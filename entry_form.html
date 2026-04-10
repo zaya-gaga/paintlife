@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>易思合道作业纸 - 网页录入表单</title>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; line-height: 1.6; }
         .container { max-width: 900px; margin: 0 auto; background: #fff; padding: 40px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-radius: 8px; box-sizing: border-box; }
@@ -17,11 +18,11 @@
         input[type="text"]:focus, select:focus { border-bottom: 2px solid #007bff; background: #fff; }
         
         /* 天干地支通用下拉样式 */
-        select.tg-select { font-weight: bold; width: 65px; text-align: center; cursor: pointer; font-size: 18px; }
+        select.tg-select { font-weight: bold; width: 45px; text-align: center; cursor: pointer; font-size: 18px; }
         
         /* 地支盒子样式 */
         .dz-box { 
-            min-width: 90px; 
+            min-width: 60px; 
             min-height: 30px; 
             border-bottom: 1px solid #999; 
             cursor: pointer; 
@@ -60,8 +61,8 @@
         
         /* 表格容器，处理移动端溢出 */
         .table-wrapper { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 10px 0; }
-        table { width: 100%; border-collapse: collapse; min-width: 600px; }
-        th, td { border: 1px solid #ccc; padding: 10px 8px; text-align: center; }
+        table { width: 100%; border-collapse: collapse; min-width: 500px; }
+        th, td { border: 1px solid #ccc; padding: 10px 4px; text-align: center; }
         th { background: #f9f9f9; }
         td input { width: 90%; border: none; text-align: center; outline: none; font-size: 16px; }
         
@@ -77,7 +78,23 @@
         .btn-clear { background-color: #6c757d; color: white; }
         .btn-clear:hover { background-color: #5a6268; }
         
-        .hint { font-size: 0.9em; color: #888; text-align: center; margin-top: 15px; padding-bottom: 20px; }
+        /* 岁数文本框样式 */
+        .dy-age-area {
+            width: 100%;
+            height: 45px;
+            border: none;
+            text-align: center;
+            resize: none;
+            outline: none;
+            background: transparent;
+            font-size: 14px;
+            font-family: inherit;
+            overflow: hidden;
+            display: block;
+            margin: 0 auto;
+            padding: 2px 0;
+            line-height: 1.4;
+        }
 
         /* iPhone / 移动端 优化 */
         @media (max-width: 768px) {
@@ -156,14 +173,14 @@
                 <table>
                     <tr>
                         <td>岁数</td>
-                        <td><input type="text" id="dy_age_1"></td>
-                        <td><input type="text" id="dy_age_2"></td>
-                        <td><input type="text" id="dy_age_3"></td>
-                        <td><input type="text" id="dy_age_4"></td>
-                        <td><input type="text" id="dy_age_5"></td>
-                        <td><input type="text" id="dy_age_6"></td>
-                        <td><input type="text" id="dy_age_7"></td>
-                        <td><input type="text" id="dy_age_8"></td>
+                        <td><textarea id="dy_age_1" class="dy-age-area"></textarea></td>
+                        <td><textarea id="dy_age_2" class="dy-age-area"></textarea></td>
+                        <td><textarea id="dy_age_3" class="dy-age-area"></textarea></td>
+                        <td><textarea id="dy_age_4" class="dy-age-area"></textarea></td>
+                        <td><textarea id="dy_age_5" class="dy-age-area"></textarea></td>
+                        <td><textarea id="dy_age_6" class="dy-age-area"></textarea></td>
+                        <td><textarea id="dy_age_7" class="dy-age-area"></textarea></td>
+                        <td><textarea id="dy_age_8" class="dy-age-area"></textarea></td>
                     </tr>
                     <tr>
                         <td>天干</td>
@@ -258,6 +275,7 @@
 
         <div class="actions">
             <button type="button" class="btn btn-save" onclick="saveMarkdown()">保存为 Markdown</button>
+            <button type="button" class="btn btn-image" onclick="saveAsImage()" style="background-color: #17a2b8; color: white;">保存为图片</button>
             <button type="reset" class="btn btn-clear">重置表单</button>
         </div>
         <p class="hint">数据将保存至您的下载文件夹，您可以将其移动至 AI 知识库目录。</p>
@@ -391,9 +409,36 @@
         const blob = new Blob([md], { type: 'text/markdown' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
-        a.href = url; a.download = `${name}-${dateStr}.md`;
+        a.href = url; a.download = `易思合道作业纸_${name}.md`;
         document.body.appendChild(a); a.click();
         document.body.removeChild(a); URL.revokeObjectURL(url);
+    }
+
+    function saveAsImage() {
+        const container = document.querySelector('.container');
+        const actions = document.querySelector('.actions');
+        const hint = document.querySelector('.hint');
+        const nameInput = document.getElementById('name');
+        const name = nameInput.value.trim() || '未命名';
+        
+        // 隐藏不需要出现在图片中的按钮和提示
+        actions.style.display = 'none';
+        hint.style.display = 'none';
+
+        html2canvas(container, {
+            scale: 2, // 提高图片清晰度
+            useCORS: true,
+            backgroundColor: '#f4f7f6'
+        }).then(canvas => {
+            const link = document.createElement('a');
+            link.download = `易思合道作业纸_${name}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            
+            // 还原显示
+            actions.style.display = 'flex';
+            hint.style.display = 'block';
+        });
     }
 </script>
 
